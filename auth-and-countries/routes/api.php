@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\HotelController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->name('auth.')->group(function () {
@@ -11,7 +10,3 @@ Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth:sanctum');
     Route::get('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate');
 });
-
-Route::apiResource('hotels', HotelController::class)->except(['store', 'update', 'destroy']);
-Route::apiResource('hotels', HotelController::class)->only(['store', 'update', 'destroy'])->middleware('auth:sanctum');
-
