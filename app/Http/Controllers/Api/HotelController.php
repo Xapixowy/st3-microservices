@@ -3,43 +3,56 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\HotelRequest;
+use HotelService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class HotelController extends Controller
 {
+    private HotelService $service;
+
+    public function __construct(HotelService $hotelService)
+    {
+        $this->service = $hotelService;
+    }
+
     public function index(): JsonResponse
     {
-        return response()->json([
-            'message' => 'Hotels retrieved',
-        ]);
+        $hotels = $this->service->index();
+
+        return response()->json($hotels, 204);
     }
 
     public function show(int $id): JsonResponse
     {
-        return response()->json([
-            'message' => 'Hotel retrieved',
-        ]);
+        $hotel = $this->service->show($id);
+
+        return response()->json($hotel);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(HotelRequest $request): JsonResponse
     {
-        return response()->json([
-            'message' => 'Hotel created',
-        ], 201);
+        $params = $request->all();
+
+        $newHotel = $this->service->store($params);
+
+        return response()->json($newHotel,201);
     }
 
-    public function update(Request $request, int $id): JsonResponse
+    public function update(HotelRequest $request, int $id): JsonResponse
     {
-        return response()->json([
-            'message' => 'Hotel updated',
-        ]);
+        $params = $request->all();
+
+        $updatedHotel = $this->service->update($id, $params);
+
+        return response()->json($updatedHotel);
     }
 
     public function destroy(int $id): JsonResponse
     {
-        return response()->json([
-            'message' => 'Hotel deleted',
-        ]);
+        $deletedHotel = $this->service->destroy($id);
+
+        return response()->json($deletedHotel);
     }
 }
