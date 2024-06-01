@@ -1,22 +1,23 @@
 <?php
 
-namespace App\Http\Requests\Api;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class HotelRequest extends FormRequest
+class RestaurantRequest extends FormRequest
 {
-    const STORE_ROUTE = 'hotels.store';
-    const UPDATE_ROUTE = 'hotels.update';
+    const STORE_ROUTE = 'restaurants.store';
+    const UPDATE_ROUTE = 'restaurants.update';
     const NAME_KEY = 'name';
-    const ADDRESS_KEY = 'address';
+    const WEBSITE_KEY = 'website';
+    const DESCRIPTION_KEY = 'description';
+    const STREET_KEY = 'street';
+    const BUILDING_NUMBER_KEY = 'building_number';
     const CITY_KEY = 'city';
     const ZIP_KEY = 'zip_code';
     const COUNTRY_KEY = 'country_numeric';
     const PHONE_KEY = 'phone';
     const EMAIL_KEY = 'email';
-    const WEBSITE_KEY = 'website';
-    const DESCRIPTION_KEY = 'description';
 
     private static $rules = [
         self::STORE_ROUTE => [
@@ -26,11 +27,26 @@ class HotelRequest extends FormRequest
                 'min:3',
                 'max:100',
             ],
-            self::ADDRESS_KEY => [
+            self::WEBSITE_KEY => [
+                'url',
+            ],
+            self::DESCRIPTION_KEY => [
+                'required',
+                'string',
+                'min:3',
+                'max:255'
+            ],
+            self::STREET_KEY => [
                 'required',
                 'string',
                 'min:3',
                 'max:100',
+            ],
+            self::BUILDING_NUMBER_KEY => [
+                'required',
+                'string',
+                'min:1',
+                'max:10',
             ],
             self::CITY_KEY => [
                 'required',
@@ -53,62 +69,48 @@ class HotelRequest extends FormRequest
             self::EMAIL_KEY => [
                 'required',
                 'email',
-            ],
-            self::WEBSITE_KEY => [
-                'required',
-                'url',
-            ],
-            self::DESCRIPTION_KEY => [
-                'required',
-                'string',
-                'min:3',
-                'max:255'
             ],
         ],
         self::UPDATE_ROUTE => [
             self::NAME_KEY => [
-                'required',
                 'string',
                 'min:3',
                 'max:100',
             ],
-            self::ADDRESS_KEY => [
-                'required',
+            self::WEBSITE_KEY => [
+                'url',
+            ],
+            self::DESCRIPTION_KEY => [
+                'string',
+                'min:3',
+                'max:255'
+            ],
+            self::STREET_KEY => [
                 'string',
                 'min:3',
                 'max:100',
+            ],
+            self::BUILDING_NUMBER_KEY => [
+                'string',
+                'min:1',
+                'max:10',
             ],
             self::CITY_KEY => [
-                'required',
                 'string',
                 'min:3',
                 'max:100',
             ],
             self::ZIP_KEY => [
-                'required',
                 'string',
             ],
             self::COUNTRY_KEY => [
-                'required',
                 'string',
             ],
             self::PHONE_KEY => [
-                'required',
                 'string',
             ],
             self::EMAIL_KEY => [
-                'required',
                 'email',
-            ],
-            self::WEBSITE_KEY => [
-                'required',
-                'url',
-            ],
-            self::DESCRIPTION_KEY => [
-                'required',
-                'string',
-                'min:3',
-                'max:255'
             ],
         ],
     ];

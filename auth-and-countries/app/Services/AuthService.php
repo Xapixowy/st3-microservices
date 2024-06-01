@@ -2,8 +2,13 @@
 
 namespace App\Services;
 
-use App\Enums\UserActivationStatus;
-use App\Enums\UserLoginStatus;
+use App\Exceptions\UserAlreadyActivatedException;
+use App\Exceptions\UserAlreadyLoggedInException;
+use App\Exceptions\UserInvalidVerificationCodeException;
+use App\Exceptions\UserNotActivatedException;
+use App\Exceptions\UserNotLoggedInException;
+use App\Exceptions\UserPasswordIncorrectException;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -11,75 +16,75 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthService
 {
-    public function register(string $name, string $email, string $password): array
+    public function register(array $data): UserResource
     {
-        return DB::transaction(function () use ($name, $email, $password) {
-            return User::create([
-                'name' => $name,
-                'email' => $email,
-                'password' => Hash::make($password),
+        return DB::transaction(function () use ($data) {
+            return UserResource::make(User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
                 'verification_code' => rand(100000, 999999)
-            ])->toArray();
+            ]));
         });
     }
 
-    public function activate(string $email, string $verificationCode): UserActivationStatus
+    public function activate(array $data): UserResource
     {
-        $user = User::where('email', $email)
+        $user = User::where('email', $data['email'])
             ->first();
 
         if ($user->email_verified_at !== null) {
-            return UserActivationStatus::ALREADY_ACTIVATED;
+            throw new UserAlreadyActivatedException();
         }
 
-        if ($user->verification_code !== $verificationCode) {
-            return UserActivationStatus::NOT_ACTIVATED;
+        if ($user->verification_code !== $data['verification_code']) {
+            throw new UserInvalidVerificationCodeException();
         }
 
         $user->verification_code = null;
         $user->email_verified_at = now();
         $user->save();
 
-        return UserActivationStatus::ACTIVATED;
+        return UserResource::make($user);
     }
 
-    public function login(string $email, string $password): UserLoginStatus|string
+    public function login(string $email, string $password): string
     {
         $user = User::where('email', $email)
             ->first();
 
         if ($user->tokens()->count() > 0) {
-            return UserLoginStatus::ALREADY_LOGGED_IN;
+            throw new UserAlreadyLoggedInException();
         }
 
         if (!Hash::check($password, $user->password)) {
-            return UserLoginStatus::PASSWORD_INCORRECT;
+            throw new UserPasswordIncorrectException();
         }
 
         if ($user->email_verified_at === null) {
-            return UserLoginStatus::ACCOUNT_NOT_ACTIVATED;
+            throw new UserNotActivatedException();
         }
 
         return $user->createToken('authToken')->plainTextToken;
     }
 
-    public function logout(User $user): UserLoginStatus
+    public function logout(User $user): bool
     {
         if ($user->tokens()->count() === 0) {
-            return UserLoginStatus::NOT_LOGGED_IN;
+            throw new UserNotLoggedInException();
         }
 
         $user->tokens()->delete();
 
-        return UserLoginStatus::LOGGED_OUT;
+        return true;
     }
 
-    public function authenticate(string $token): UserLoginStatus
+    public function authenticate(string $token): bool
     {
         if (!PersonalAccessToken::findToken($token)) {
-            return UserLoginStatus::NOT_LOGGED_IN;
+            throw new UserNotLoggedInException();
         }
 
-        return UserLoginStatus::ALREADY_LOGGED_IN;
+        return true;
     }
 }

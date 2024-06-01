@@ -10,11 +10,14 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('hotels', function (Blueprint $table) {
+        Schema::create('countries', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('website')->nullable();
-            $table->text('description');
+            $table->string('alpha2', 2);
+            $table->string('alpha3', 3);
+            $table->string('numeric', 3);
+            $table->string('license_plate', 3);
+            $table->string('domain', 3);
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('hotels');
+        Schema::dropIfExists('countries');
     }
 };

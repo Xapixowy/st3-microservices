@@ -2,29 +2,28 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Hotel extends Model
+class Table extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'name',
-        'address',
-        'city',
-        'zip_code',
-        'country_numeric',
-        'phone',
-        'email',
-        'website',
         'description',
+        'capacity',
+        'restaurant_id',
     ];
 
     protected $hidden = [
+        'restaurant_id',
         'created_at',
-        'updated_at',
+        'updated_at'
     ];
+
+    public function restaurant(): BelongsTo
+    {
+        return $this->belongsTo(Restaurant::class);
+    }
 
     protected function casts(): array
     {

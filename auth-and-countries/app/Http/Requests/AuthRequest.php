@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -19,7 +19,7 @@ class AuthRequest extends FormRequest
     private static $rules = [
         self::REGISTER_ROUTE => [
             self::NAME_KEY => 'required|string',
-            self::EMAIL_KEY=> 'required|email|unique:users,email',
+            self::EMAIL_KEY => 'required|email|unique:users,email',
             self::PASSWORD_KEY => 'required|string|min:6',
         ],
         self::ACTIVATE_ROUTE => [

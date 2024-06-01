@@ -2,30 +2,29 @@
 
 namespace App\Models;
 
-abstract class Business extends Model
+use Illuminate\Database\Eloquent\Model;
+
+class Country extends Model
 {
     protected $fillable = [
         'name',
-        'address',
-        'city',
-        'zip_code',
-        'country_numeric',
-        'phone',
-        'email',
-        'website',
-        'description',
+        'alpha2',
+        'alpha3',
+        'numeric',
+        'license_plate',
+        'domain'
     ];
 
     protected $hidden = [
         'created_at',
-        'updated_at',
+        'updated_at'
     ];
 
     protected function casts(): array
     {
         return [
             'created_at' => 'datetime',
-            'updated_at' => 'datetime',
+            'updated_at' => 'datetime'
         ];
     }
 }
