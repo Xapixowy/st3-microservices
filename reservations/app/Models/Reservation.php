@@ -10,12 +10,7 @@ abstract class Reservation extends Model
         'user_id',
         'check_in_date',
         'check_out_date',
-        'businessable_id',
-        'businessable_type',
-        'reservable_id',
-        'reservable_type',
         'status',
-        'prepaid',
     ];
 
     protected $hidden = [
