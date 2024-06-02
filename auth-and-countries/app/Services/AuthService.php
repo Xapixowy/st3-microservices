@@ -20,7 +20,9 @@ class AuthService
     {
         return DB::transaction(function () use ($data) {
             return UserResource::make(User::create([
-                'name' => $data['name'],
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'phone' => $data['phone'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
                 'verification_code' => rand(100000, 999999)

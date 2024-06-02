@@ -2,34 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Table extends Model
+class Table extends RoomTable
 {
-    protected $fillable = [
-        'name',
-        'description',
-        'capacity',
-        'restaurant_id',
-    ];
+    public function __construct()
+    {
+        parent::__construct();
 
-    protected $hidden = [
-        'restaurant_id',
-        'created_at',
-        'updated_at'
-    ];
+        $this->fillable = array_merge($this->fillable, [
+            'restaurant_id',
+        ]);
+
+        $this->hidden = array_merge($this->hidden, [
+            'restaurant_id',
+        ]);
+    }
 
     public function restaurant(): BelongsTo
     {
         return $this->belongsTo(Restaurant::class);
-    }
-
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
     }
 }

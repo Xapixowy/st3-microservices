@@ -12,12 +12,12 @@ return new class extends Migration {
     {
         Schema::create('countries', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('alpha2', 2);
-            $table->string('alpha3', 3);
-            $table->string('numeric', 3);
-            $table->string('license_plate', 3);
-            $table->string('domain', 3);
+            $table->string('name')->unique();
+            $table->string('alpha2', 2)->unique();
+            $table->string('alpha3', 3)->unique();
+            $table->string('numeric', 3)->unique();
+            $table->string('license_plate', 3)->unique();
+            $table->string('domain', 3)->unique();
             $table->timestamps();
         });
     }

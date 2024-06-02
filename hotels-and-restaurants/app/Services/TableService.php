@@ -7,7 +7,7 @@ use App\Exceptions\TableNotFoundException;
 use App\Http\Resources\RoomResource;
 use App\Http\Resources\TableResource;
 use App\Models\Restaurant;
-use App\Models\Room;
+use App\Models\Table;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 
@@ -40,7 +40,7 @@ class TableService
         return TableResource::make($table);
     }
 
-    private function getTable(Restaurant $restaurant, int $tableId): Room
+    private function getTable(Restaurant $restaurant, int $tableId): Table
     {
         $table = $restaurant->tables->find($tableId);
 

@@ -9,7 +9,13 @@ class AddressResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'street' => $this->street,
+            'building_number' => $this->building_number,
+            'city' => $this->city,
+            'zip_code' => $this->zip_code,
+            'country' => $this->country,
+        ];
     }
 }
 

@@ -14,8 +14,8 @@ abstract class BusinessResource extends JsonResource
             'name' => $this->name,
             'website' => $this->website,
             'description' => $this->description,
-            'address' => RoomResource::make($this->address),
-            'contact' => RoomResource::make($this->contact),
+            'address' => AddressResource::make($this->address),
+            'contact' => ContactResource::make($this->contact),
         ];
     }
 }

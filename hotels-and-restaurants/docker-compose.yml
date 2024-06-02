@@ -1,5 +1,5 @@
 services:
-    laravel.test:
+    hotels-and-restaurants:
         build:
             context: ./vendor/laravel/sail/runtimes/8.3
             dockerfile: Dockerfile
@@ -21,6 +21,7 @@ services:
             - '.:/var/www/html'
         networks:
             - sail
+            - st3-microservices
         depends_on:
             - mysql
             - redis
@@ -103,6 +104,8 @@ services:
 networks:
     sail:
         driver: bridge
+    st3-microservices:
+        external: true
 volumes:
     sail-mysql:
         driver: local
