@@ -3,14 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
-abstract class Reservation extends Model
+class Reservation extends Model
 {
     protected $fillable = [
-        'user_id',
+        'client_id',
         'check_in_date',
         'check_out_date',
-        'status',
+        'hotel_id',
+        'room_id',
+        'restaurant_id',
+        'table_id',
+        'is_paid'
     ];
 
     protected $hidden = [
@@ -18,11 +23,19 @@ abstract class Reservation extends Model
         'updated_at',
     ];
 
+    public function client(): HasOne
+    {
+        return $this->hasOne(Client::class);
+    }
+
     protected function casts(): array
     {
         return [
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
+            'check_in_date' => 'datetime',
+            'check_out_date' => 'datetime',
+            'is_paid' => 'boolean',
         ];
     }
 }

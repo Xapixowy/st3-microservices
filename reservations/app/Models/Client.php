@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class User extends Model
+class Client extends Model
 {
     protected $fillable = [
         'first_name',
@@ -17,6 +18,11 @@ class User extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function reservation(): BelongsTo
+    {
+        return $this->belongsTo(Reservation::class);
+    }
 
     protected function casts(): array
     {

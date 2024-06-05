@@ -7,14 +7,15 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('room_reservations', function (Blueprint $table) {
+        Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
+            $table->foreignId('client_id')->constrained();
             $table->date('check_in_date');
             $table->date('check_out_date');
-            $table->string('status');
-            $table->foreignId('room_id');
-            $table->foreignId('hotel_id');
+            $table->foreignId('hotel_id')->nullable();
+            $table->foreignId('room_id')->nullable();
+            $table->foreignId('restaurant_id')->nullable();
+            $table->foreignId('table_id')->nullable();
             $table->boolean('is_paid')->default(false);
             $table->timestamps();
         });
@@ -22,6 +23,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('room_reservations');
+        Schema::dropIfExists('reservations');
     }
 };
