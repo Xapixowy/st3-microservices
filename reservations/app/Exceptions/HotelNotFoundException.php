@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Exceptions;
+namespace app\Exceptions;
 
 use Exception;
 use Illuminate\Http\JsonResponse;
 
-class UserNotActivatedException extends Exception
+class HotelNotFoundException extends Exception
 {
-    protected $message = 'User not activated!';
-    protected $code = 400;
+    protected $message = 'Hotel not found!';
+    protected $code = 404;
 
     public function render($request): JsonResponse
     {

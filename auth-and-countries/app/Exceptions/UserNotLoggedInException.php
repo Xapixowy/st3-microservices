@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 class UserNotLoggedInException extends Exception
 {
-    protected $message = 'User not logged in';
+    protected $message = 'User not logged in!';
     protected $code = 400;
 
     public function render($request): JsonResponse

@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 class TableNotFoundException extends Exception
 {
-    protected $message = 'Table not found';
+    protected $message = 'Table not found!';
     protected $code = 404;
 
     public function render($request): JsonResponse

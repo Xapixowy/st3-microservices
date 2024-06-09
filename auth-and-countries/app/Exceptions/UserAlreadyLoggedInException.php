@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 class UserAlreadyLoggedInException extends Exception
 {
-    protected $message = 'User already logged in';
+    protected $message = 'User already logged in!';
     protected $code = 400;
 
     public function render($request): JsonResponse

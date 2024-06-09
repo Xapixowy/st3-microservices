@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Reservation extends Model
 {
@@ -22,11 +21,6 @@ class Reservation extends Model
         'created_at',
         'updated_at',
     ];
-
-    public function client(): HasOne
-    {
-        return $this->hasOne(Client::class);
-    }
 
     protected function casts(): array
     {

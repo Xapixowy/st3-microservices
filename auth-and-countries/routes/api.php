@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->name('auth.')->group(function () {
@@ -15,4 +16,8 @@ Route::prefix('auth')->name('auth.')->group(function () {
 Route::prefix('countries')->name('countries.')->group(function () {
     Route::get('/', [CountryController::class, 'index'])->name('index');
     Route::get('/find', [CountryController::class, 'find'])->name('find');
+});
+
+Route::prefix('users')->name('users.')->group(function () {
+    Route::get('/find/{id}', [UserController::class, 'find'])->name('find');
 });

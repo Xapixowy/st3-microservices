@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 class UserPasswordIncorrectException extends Exception
 {
-    protected $message = 'Password incorrect';
+    protected $message = 'Password incorrect!';
     protected $code = 400;
 
     public function render($request): JsonResponse

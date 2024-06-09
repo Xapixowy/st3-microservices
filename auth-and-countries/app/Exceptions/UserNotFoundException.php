@@ -5,10 +5,10 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Http\JsonResponse;
 
-class UserNotActivatedException extends Exception
+class UserNotFoundException extends Exception
 {
-    protected $message = 'User not activated!';
-    protected $code = 400;
+    protected $message = 'User not found!';
+    protected $code = 404;
 
     public function render($request): JsonResponse
     {

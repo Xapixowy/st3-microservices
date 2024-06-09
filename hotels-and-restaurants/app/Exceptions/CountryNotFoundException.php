@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 class CountryNotFoundException extends Exception
 {
-    protected $message = 'Country not found.';
+    protected $message = 'Country not found!';
     protected $code = 404;
 
     public function render($request): JsonResponse

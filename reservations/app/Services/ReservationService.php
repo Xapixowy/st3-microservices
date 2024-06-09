@@ -4,6 +4,8 @@ namespace app\Services;
 
 use App\Exceptions\ReservationNotFoundException;
 use App\Exceptions\ReservationOverlappingException;
+use App\Exceptions\ReservationTablePaidException;
+use App\Http\Requests\ReservationRequest;
 use App\Http\Resources\ReservationResource;
 use App\Models\Reservation;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -34,73 +36,47 @@ class ReservationService
 
     public function store(array $data): ReservationResource
     {
-        $this->checkIfReservationOverlapping($data['check_in_date'], $data['check_out_date']);
+        $this->checkIfReservationOverlapping(
+            $data[ReservationRequest::CHECK_IN_DATE_KEY],
+            $data[ReservationRequest::CHECK_OUT_DATE_KEY],
+            $data[ReservationRequest::ROOM_ID_KEY] ?? null,
+            $data[ReservationRequest::TABLE_ID_KEY] ?? null
+        );
 
-        $userData = [
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'phone' => $data['phone'],
-        ];
-
-        $reservationData = [
-            'check_in_date' => $data['check_in_date'],
-            'check_out_date' => $data['check_out_date'],
-            'hotel_id' => $data['hotel_id'],
-            'room_id' => $data['room_id'],
-            'restaurant_id' => $data['restaurant_id'],
-            'table_id' => $data['table_id'],
-            'is_paid' => $data['is_paid']
-        ];
-
-
-        return DB::transaction(function () use ($userData, $reservationData) {
-            $newReservation = Reservation::create($reservationData);
-            $newReservation->user()->create($userData);
-
-            return ReservationResource::make($newReservation);
+        return DB::transaction(function () use ($data) {
+            return ReservationResource::make(Reservation::create($data));
         });
     }
 
-    private function checkIfReservationOverlapping(string $check_in_date, string $check_out_date): void
+    private function checkIfReservationOverlapping(string $check_in_date, string $check_out_date, ?int $room_id, ?int $table_id): void
     {
-        $reservations = Reservation::where('check_in_date', '<=', $check_in_date)
-            ->where('check_out_date', '>=', $check_out_date)
-            ->get();
+        $reservations = Reservation::where(function ($query) use ($check_in_date, $check_out_date) {
+            $query->where(ReservationRequest::CHECK_IN_DATE_KEY, '<', $check_out_date)
+                ->where(ReservationRequest::CHECK_OUT_DATE_KEY, '>', $check_in_date);
+        })->where(function ($query) use ($room_id, $table_id) {
+            if ($room_id) {
+                $query->where(ReservationRequest::ROOM_ID_KEY, $room_id);
+            }
+            if ($table_id) {
+                $query->where(ReservationRequest::TABLE_ID_KEY, $table_id);
+            }
+        })->get();
 
-        if (!empty($reservations)) {
+        if (!$reservations->isEmpty()) {
             throw new ReservationOverlappingException();
         }
     }
 
     public function update(int $id, array $data): ReservationResource
     {
-        if (isset($data['check_in_date']) || isset($data['check_out_date'])) {
-            $this->checkIfReservationOverlapping($data['check_in_date'], $data['check_out_date']);
-        }
-
         $reservation = $this->getReservation($id);
 
-        $clientData = array_filter([
-            'first_name' => $data['first_name'] ?? null,
-            'last_name' => $data['last_name'] ?? null,
-            'email' => $data['email'] ?? null,
-            'phone' => $data['phone'] ?? null,
-        ], fn($value) => $value !== null);
+        if ($reservation->restaurant_id || $reservation->table_id) {
+            throw new ReservationTablePaidException();
+        };
 
-        $reservationData = array_filter([
-            'check_in_date' => $data['check_in_date'] ?? null,
-            'check_out_date' => $data['check_out_date'] ?? null,
-            'hotel_id' => $data['hotel_id'] ?? null,
-            'room_id' => $data['room_id'] ?? null,
-            'restaurant_id' => $data['restaurant_id'] ?? null,
-            'table_id' => $data['table_id'] ?? null,
-            'is_paid' => $data['is_paid'] ?? null
-        ], fn($value) => $value !== null);
-
-        return DB::transaction(function () use ($reservation, $clientData, $reservationData) {
-            $reservation->update($reservationData);
-            $reservation->client()->update($clientData);
+        return DB::transaction(function () use ($reservation, $data) {
+            $reservation->update($data);
 
             return ReservationResource::make($reservation);
         });
@@ -112,7 +88,7 @@ class ReservationService
 
         return DB::transaction(function () use ($id, $reservation) {
             Reservation::destroy($id);
-            $reservation->user()->delete();
+
             return ReservationResource::make($reservation);
         });
     }

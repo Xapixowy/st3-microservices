@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 class RestaurantNotFoundException extends Exception
 {
-    protected $message = 'Restaurant not found';
+    protected $message = 'Restaurant not found!';
     protected $code = 404;
 
     public function render($request): JsonResponse

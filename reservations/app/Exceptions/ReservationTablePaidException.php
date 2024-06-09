@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Exceptions;
+namespace app\Exceptions;
 
 use Exception;
 use Illuminate\Http\JsonResponse;
 
-class UserNotActivatedException extends Exception
+class ReservationTablePaidException extends Exception
 {
-    protected $message = 'User not activated!';
-    protected $code = 400;
+    protected $message = 'Table reservations cannot be paid!';
+    protected $code = 409;
 
     public function render($request): JsonResponse
     {

@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 class ReservationOverlappingException extends Exception
 {
-    protected $message = 'Reservation overlapping';
+    protected $message = 'Reservation overlapping!';
     protected $code = 409;
 
     public function render($request): JsonResponse
