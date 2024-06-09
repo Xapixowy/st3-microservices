@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\HotelNotFoundException;
 use App\Http\Resources\HotelResource;
-use App\Models\Business;
+use App\Models\Hotel;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +12,7 @@ class HotelService
 {
     public function index(): AnonymousResourceCollection
     {
-        return HotelResource::collection(Business::all());
+        return HotelResource::collection(Hotel::all());
     }
 
     public function show(int $id): HotelResource
@@ -20,9 +20,9 @@ class HotelService
         return HotelResource::make($this->getHotel($id));
     }
 
-    private function getHotel(int $hotelId): Business
+    private function getHotel(int $hotelId): Hotel
     {
-        $hotel = Business::find($hotelId);
+        $hotel = Hotel::find($hotelId);
 
         if (empty($hotel)) {
             throw new HotelNotFoundException();
@@ -53,7 +53,7 @@ class HotelService
         ];
 
         return DB::transaction(function () use ($hotelData, $addressData, $contactData) {
-            $newHotel = Business::create($hotelData);
+            $newHotel = Hotel::create($hotelData);
             $newHotel->address()->create($addressData);
             $newHotel->contact()->create($contactData);
 
@@ -98,7 +98,7 @@ class HotelService
         $hotel = $this->getHotel($id);
 
         return DB::transaction(function () use ($id, $hotel) {
-            Business::destroy($id);
+            Hotel::destroy($id);
 
             return HotelResource::make($hotel);
         });
