@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use app\Http\Requests\ReservationRequest;
-use app\Services\ReservationService;
+use App\Http\Requests\ReservationRequest;
+use App\Services\ReservationService;
 use Illuminate\Http\JsonResponse;
 
 class ReservationController extends Controller

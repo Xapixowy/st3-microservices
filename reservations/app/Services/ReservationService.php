@@ -2,9 +2,9 @@
 
 namespace app\Services;
 
-use app\Exceptions\ReservationNotFoundException;
-use app\Exceptions\ReservationOverlappingException;
-use app\Http\Resources\ReservationResource;
+use App\Exceptions\ReservationNotFoundException;
+use App\Exceptions\ReservationOverlappingException;
+use App\Http\Resources\ReservationResource;
 use App\Models\Reservation;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;

@@ -9,7 +9,10 @@ class ReservationRequest extends FormRequest
     const STORE_ROUTE = 'reservations.store';
     const UPDATE_ROUTE = 'reservations.update';
 
-    const CLIENT_ID_KEY = 'client_id';
+    const CLIENT_FIRST_NAME_KEY = 'client_first_name';
+    const CLIENT_LAST_NAME_KEY = 'client_last_name';
+    const CLIENT_EMAIL_KEY = 'client_email';
+    const CLIENT_PHONE_KEY = 'client_phone';
     const CHECK_IN_DATE_KEY = 'check_in_date';
     const CHECK_OUT_DATE_KEY = 'check_out_date';
     const HOTEL_ID_KEY = 'hotel_id';
@@ -20,9 +23,25 @@ class ReservationRequest extends FormRequest
 
     private static $rules = [
         self::STORE_ROUTE => [
-            self::CLIENT_ID_KEY => [
+            self::CLIENT_FIRST_NAME_KEY => [
                 'required',
-                'integer',
+                'string',
+                'min:3',
+                'max:100',
+            ],
+            self::CLIENT_LAST_NAME_KEY => [
+                'required',
+                'string',
+                'min:3',
+                'max:100',
+            ],
+            self::CLIENT_EMAIL_KEY => [
+                'required',
+                'email',
+            ],
+            self::CLIENT_PHONE_KEY => [
+                'required',
+                'string',
             ],
             self::CHECK_IN_DATE_KEY => [
                 'required',
@@ -53,32 +72,38 @@ class ReservationRequest extends FormRequest
             ]
         ],
         self::UPDATE_ROUTE => [
-            self::CLIENT_ID_KEY => [
-                'required',
-                'integer',
+            self::CLIENT_FIRST_NAME_KEY => [
+                'string',
+                'min:3',
+                'max:100',
+            ],
+            self::CLIENT_LAST_NAME_KEY => [
+                'string',
+                'min:3',
+                'max:100',
+            ],
+            self::CLIENT_EMAIL_KEY => [
+                'email',
+            ],
+            self::CLIENT_PHONE_KEY => [
+                'string',
             ],
             self::CHECK_IN_DATE_KEY => [
-                'required',
                 'date',
             ],
             self::CHECK_OUT_DATE_KEY => [
-                'required',
                 'date',
             ],
             self::HOTEL_ID_KEY => [
-                'required',
                 'integer',
             ],
             self::ROOM_ID_KEY => [
-                'required',
                 'integer',
             ],
             self::RESTAURANT_ID_KEY => [
-                'required',
                 'integer',
             ],
             self::TABLE_ID_KEY => [
-                'required',
                 'integer',
             ],
             self::IS_PAID_KEY => [
@@ -102,6 +127,7 @@ class ReservationRequest extends FormRequest
             $rules[self::IS_PAID_KEY][] = 'required_without_all:' . self::RESTAURANT_ID_KEY . ',' . self::TABLE_ID_KEY;
             $rules[self::RESTAURANT_ID_KEY][] = 'required_without_all:' . self::HOTEL_ID_KEY . ',' . self::TABLE_ID_KEY;
             $rules[self::TABLE_ID_KEY][] = 'required_without_all:' . self::HOTEL_ID_KEY . ',' . self::ROOM_ID_KEY;
+            $rules[self::CLIENT_PHONE_KEY][] = 'regex:' . config('regex.phone', '/\b\d{3}\d{3}-\d{3}\b/');
         }
 
         return self::$rules[$this->route()->getName()];
