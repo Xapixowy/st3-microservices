@@ -17,12 +17,30 @@
         <td>{{ hotel.website }}</td>
         <td>{{ hotel.description }}</td>
         <td class="buttons">
-          <v-btn @click="editHandler(hotel)" color="primary">Edit</v-btn>
-          <v-btn @click="deleteHandler(hotel)" color="error">Delete</v-btn>
+          <div class="buttons_container">
+            <v-btn @click="editHandler(hotel)" color="primary">Edit</v-btn>
+
+            <v-dialog max-width="500px">
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn v-bind="activatorProps" color="error">Delete</v-btn>
+              </template>
+              <template v-slot:default="{ isActive }">
+                <div class="delete-dialog">
+                  <h1 class="delete-dialog__title">Delete Hotel</h1>
+                  <p class="delete-dialog__description">Do you want to delete this hotel?</p>
+                  <div class="delete-dialog__actions">
+                    <v-btn @click="deleteHandler(hotel)" color="error">Delete</v-btn>
+                    <v-btn @click="isActive.value = false" color="primary">Cancel</v-btn>
+                  </div>
+                </div>
+              </template>
+            </v-dialog>
+          </div>
         </td>
       </tr>
       </tbody>
     </v-table>
+
   </main-layout>
 </template>
 
@@ -34,6 +52,7 @@ import router from "@/router.ts";
 import {onMounted, ref} from "vue";
 import {Hotel} from "@/types/Hotel.ts";
 import {userHotelStore} from "@/storage/HotelStorage.ts";
+import ToastFactory from "@/services/ToastService.ts";
 
 const hotelStore = userHotelStore();
 
@@ -46,13 +65,16 @@ const editHandler = (hotel: Hotel) => {
   router.push(`/hotels/${hotel.id}/edit`);
 }
 
-const deleteHandler = (restaurant: Hotel) => {
-  // restaurantStore.delete(restaurant.id);
+const deleteHandler = async (hotel: Hotel) => {
+  if (hotel.id != null) {
+    await hotelStore.deleteHotel(hotel.id);
+  }else {
+    ToastFactory.danger("Hotel deletion failed!");
+  }
 }
 
 onMounted(async () => {
   hotels.value = await hotelStore.getAll();
-  console.log(hotels.value);
 })
 </script>
 

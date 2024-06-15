@@ -33,14 +33,14 @@
 
 <script setup lang="ts">
 import MainLayout from "@/shared/MainLayout.vue";
-import {userRestaurantStore} from "@/storage/RestaurantStorage.ts";
+import {useRestaurantStore} from "@/storage/RestaurantStorage.ts";
 import {ref, onMounted, computed} from "vue";
 import {Restaurant} from "@/types/Restaurant.ts";
 import router from "@/router.ts";
 import {userCountryStore} from "@/storage/CountryStorage.ts";
 import {Country} from "@/types/Country.ts";
 
-const restaurantStore = userRestaurantStore();
+const restaurantStore = useRestaurantStore();
 const countryStore = userCountryStore();
 const errors = ref<string[]>([]);
 

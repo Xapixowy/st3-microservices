@@ -17,7 +17,9 @@ class RestaurantService {
     }
 
     public async getById(id: string): Promise<any> {
-        return await ApiClient.get(`${this.endpoint}/${id}`);
+        const response = await ApiClient.get(`${this.endpoint}/${id}`);
+        const responseData = await response.json();
+        return responseData.data;
     }
 
     public async store(restaurant: Restaurant): Promise<any> {
@@ -33,15 +35,28 @@ class RestaurantService {
     }
 
     public async update(restaurant: Restaurant): Promise<any> {
-        return await ApiClient.patch(`${this.endpoint}/${restaurant.id}`, restaurant);
+        const response = await ApiClient.patch(`${this.endpoint}/${restaurant.id}`, restaurant);
+        const responseData = await response.json();
+        if ( response.status === 422 ) {
+            const responseData = await response.json();
+            throw new ValidationError("" ,responseData.errors);
+        }
+        if (!response.ok) {
+            throw new Error("Restaurant update failed!");
+        }
+        return response;
     }
 
     public async delete(id: string): Promise<any> {
-        return await ApiClient.delete(`${this.endpoint}/${id}`);
+        const response = await ApiClient.delete(`${this.endpoint}/${id}`);
+        if (!response.ok) {
+            throw new Error("Restaurant deletion failed!");
+        }
+        return response;
     }
 
     public async getRestaurantTables(restaurantId: string): Promise<any> {
-        return await ApiClient.get(`${this.endpoint}/${restaurantId}/tables`);
+         await ApiClient.get(`${this.endpoint}/${restaurantId}/tables`);
     }
 
     public async getRestaurantTable(restaurantId: string, tableId: string): Promise<any> {

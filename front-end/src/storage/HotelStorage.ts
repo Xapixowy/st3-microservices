@@ -27,6 +27,7 @@ export const userHotelStore = defineStore('hotel', () => {
 
     const update = async (hotel: Hotel) => {
         try {
+            console.log(hotel, "HOTEL STORAGE");
             await HotelService.update(hotel);
             ToastFactory.success("Hotel updated!");
         } catch (error) {
@@ -37,11 +38,27 @@ export const userHotelStore = defineStore('hotel', () => {
         }
     }
 
+    const deleteHotel = async (id: string) => {
+        try {
+            await HotelService.delete(id);
+            await window.location.reload();
+            await ToastFactory.success("Hotel deleted!");
+        } catch (error) {
+            ToastFactory.danger("Hotel deletion failed!");
+        }
+    }
+
+    const getRooms = async (id: string) => {
+        return await HotelService.getHotelRooms(id);
+    }
+
 
     return {
         getAll,
         store,
         find,
-        update
+        update,
+        deleteHotel,
+        getRooms
     }
 });

@@ -1,6 +1,6 @@
 <template>
   <main-layout :title="hotel.name" :description="hotel.description">
-    <div class="create-hotel-form">
+    <div class="form-container">
       <v-form>
         <v-text-field v-model="hotelName" label="Name" :rules="[v => !!v || 'Name is required']" />
         <p v-if="hotelNameError" class="error">{{ hotelNameError }}</p>
@@ -21,7 +21,7 @@
         <p v-if="hotelPhoneError" class="error">{{ hotelPhoneError }}</p>
         <v-text-field v-model="hotelEmail" label="Email" :rules="[v => !!v || 'Email is required']" />
         <p v-if="hotelEmailError" class="error">{{ hotelEmailError }}</p>
-        <div class="create-hotel-form__actions">
+        <div class="form__actions">
           <v-btn @click="cancel">Cancel</v-btn>
           <v-btn @click="editHotelHandler">Edit</v-btn>
         </div>
@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
+import {computed, ref, onBeforeMount, watch} from "vue";
 import MainLayout from "@/shared/MainLayout.vue";
 import {Hotel} from "@/types/Hotel.ts";
 import {useRouter} from "vue-router";
@@ -69,16 +69,48 @@ const hotelStore = userHotelStore();
 const countryStore = userCountryStore();
 const countries = ref<Country[]>([]);
 
-const hotelName = computed(() => hotel.value.name);
-const hotelWebsite = computed(() => hotel.value.website);
-const hotelDescription = computed(() => hotel.value.description);
-const hotelStreet = computed(() => hotel.value.address.street);
-const hotelBuildingNumber = computed(() => hotel.value.address.building_number);
-const hotelCity = computed(() => hotel.value.address.city);
-const hotelZipCode = computed(() => hotel.value.address.zip_code);
-const hotelCountryNumeric = computed(() => hotel.value.address.country.numeric);
-const hotelPhone = computed(() => hotel.value.contact.phone);
-const hotelEmail = computed(() => hotel.value.contact.email);
+const hotelId = ref<string>('');
+const hotelName = ref<string>('');
+const hotelWebsite = ref<string>('');
+const hotelDescription = ref<string>('');
+const hotelStreet = ref<string>('');
+const hotelBuildingNumber = ref<string>('');
+const hotelCity = ref<string>('');
+const hotelZipCode = ref<string>('');
+const hotelCountryNumeric = ref<string>('');
+const hotelPhone = ref<string>('');
+const hotelEmail = ref<string>('');
+
+
+watch(hotel, () => {
+  hotelId.value = hotel.value.id;
+  hotelName.value = hotel.value.name;
+  hotelWebsite.value = hotel.value.website;
+  hotelDescription.value = hotel.value.description;
+  hotelStreet.value = hotel.value.address.street;
+  hotelBuildingNumber.value = hotel.value.address.building_number;
+  hotelCity.value = hotel.value.address.city;
+  hotelZipCode.value = hotel.value.address.zip_code;
+  hotelCountryNumeric.value = hotel.value.address.country.numeric;
+  hotelPhone.value = hotel.value.contact.phone;
+  hotelEmail.value = hotel.value.contact.email;
+})
+
+const hotelFormData = computed(() => {
+  return {
+    id: hotelId.value,
+    name: hotelName.value,
+    website: hotelWebsite.value,
+    description: hotelDescription.value,
+    street: hotelStreet.value,
+    building_number: hotelBuildingNumber.value,
+    city: hotelCity.value,
+    zip_code: hotelZipCode.value,
+    country_numeric: hotelCountryNumeric.value,
+    phone: hotelPhone.value,
+    email: hotelEmail.value
+  }
+});
 
 const hotelNameError = computed(() => {
   return !!errors.value.name ? errors.value.name[0] : '';
@@ -108,9 +140,10 @@ const hotelEmailError = computed(() => {
   return !!errors.value.email ? errors.value.email[0] : '';
 });
 
+
 const editHotelHandler = async () => {
   try {
-    await hotelStore.update(hotel.value);
+    await hotelStore.update(hotelFormData.value);
     await router.push('/hotels');
   } catch (error) {
     errors.value = error.errorObject;
@@ -122,7 +155,7 @@ const cancel = () => {
 }
 
 
-onMounted(async () => {
+onBeforeMount(async () => {
   hotel.value = await hotelStore.find(props.id);
   countries.value = await countryStore.getAll();
 
@@ -132,5 +165,6 @@ onMounted(async () => {
 
 
 <style scoped>
+
 
 </style>

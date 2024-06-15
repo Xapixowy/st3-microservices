@@ -1,6 +1,6 @@
 <template>
   <main-layout title="Hotel" description="Create a new hotel">
-    <div class="create-hotel-form">
+    <div class="form-container">
       <v-form>
         <v-text-field v-model="hotelName" label="Name" :rules="[v => !!v || 'Name is required']" />
         <p v-if="hotelNameError" class="error">{{ hotelNameError }}</p>
@@ -21,7 +21,7 @@
         <p v-if="hotelPhoneError" class="error">{{ hotelPhoneError }}</p>
         <v-text-field v-model="hotelEmail" label="Email" :rules="[v => !!v || 'Email is required']" />
         <p v-if="hotelEmailError" class="error">{{ hotelEmailError }}</p>
-        <div class="create-hotel-form__actions">
+        <div class="form__actions">
           <v-btn @click="cancel">Cancel</v-btn>
           <v-btn @click="createHotelHandler">Create</v-btn>
         </div>

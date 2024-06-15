@@ -36,15 +36,31 @@ class HotelService {
     }
 
     public async update(hotel: Hotel): Promise<any> {
-        return await ApiClient.patch(`${this.endpoint}/${hotel.id}`, hotel);
+        const response = await ApiClient.patch(`${this.endpoint}/${hotel.id}`, hotel);
+        const responseData = await response.json();
+        if ( response.status === 422 ) {
+            const responseData = await response.json();
+            throw new ValidationError("" ,responseData.errors);
+        }
+        if (!response.ok) {
+            throw new Error("Hotel update failed!");
+        }
+        return response;
     }
 
     public async delete(id: string): Promise<any> {
-        return await ApiClient.delete(`${this.endpoint}/${id}`);
+        const response = await ApiClient.delete(`${this.endpoint}/${id}`);
+        if (!response.ok) {
+            throw new Error("Hotel deletion failed!");
+        }
+        return response;
     }
 
     public async getHotelRooms(hotelId: string): Promise<any> {
-        return await ApiClient.get(`${this.endpoint}/${hotelId}/rooms`);
+        const response = await ApiClient.get(`${this.endpoint}/${hotelId}/rooms`);
+        const responseData = await response.json();
+        console.log(responseData.data);
+        return responseData.data;
     }
 
     public async getHotelRoom(hotelId: string, roomId: string): Promise<any> {
