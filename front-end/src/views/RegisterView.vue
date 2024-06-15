@@ -1,5 +1,6 @@
 
 <template>
+  <form-container >
   <form class="login-form">
     <FormErrors :errors="errors" />
     <div class="login-form__inputs">
@@ -68,6 +69,7 @@
       </div>
     </div>
   </form>
+  </form-container>
 </template>
 
 <script setup lang="ts">
@@ -75,6 +77,8 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import FormErrors from "@components/FormErrors.vue";
 import {usUserStore} from "@/storage/UserStorage.ts";
+import ValidationError from "@/services/ValidationError.ts";
+import FormContainer from "@components/FormContainer.vue";
 
 const userStore = usUserStore();
 const router = useRouter()
@@ -94,8 +98,8 @@ const isFormValid = computed<boolean>(() => {
 
 const formData = computed(() => {
   return {
-    firstName: firstName.value,
-    lastName: lastName.value,
+    first_name: firstName.value,
+    last_name: lastName.value,
     email: email.value,
     password: password.value,
     confirmPassword: confirmPassword.value,
@@ -110,15 +114,22 @@ const checkPassword = (password: string, confirmPassword: string) => {
 
 const register = async (e) => {
   e.preventDefault();
+  errors.value = [];
   if(!checkPassword(password.value, confirmPassword.value)) {
     errors.value.push("Passwords don't match");
     return;
   }
   try {
-    userStore.register(formData.value);
+    await userStore.register(formData.value);
   } catch (error) {
-    console.log(error);
-    errors.value.push(error.message);
+    if(error instanceof ValidationError) {
+      console.log(error.errorObject);
+      Object.keys(error.errorObject).forEach(key => {
+        error.errorObject[key].forEach(error => {
+          errors.value.push(error);
+        });
+      });
+    }
   }
 }
 </script>
@@ -126,17 +137,14 @@ const register = async (e) => {
 <style lang="scss" scoped>
 .login-form {
   display: flex;
+  margin: auto;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 25rem;
-  height: auto;
+  height: fit-content;
   border-radius: 1rem;
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.3);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   background-color: var(--black);
   padding: 1.5rem;
   &__actions {

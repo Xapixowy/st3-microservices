@@ -3,6 +3,7 @@ import {User} from "@/types/User.ts";
 import AuthService from "@/services/AuthService.ts";
 import ToastFactory from "@/services/ToastService.ts";
 import router from "@/router.ts";
+import ValidationError from "@/services/ValidationError.ts";
 
 
 export const usUserStore = defineStore('user', () => {
@@ -18,13 +19,17 @@ export const usUserStore = defineStore('user', () => {
 
     const register: (user: User) => void = async (user: User) => {
         try {
-            await AuthService.register(user);
+            const response = await AuthService.register(user);
+            console.log(await response.json());
             await router.push('/login');
             ToastFactory.success("Register successful!");
         } catch (error) {
             ToastFactory.danger("Register failed!");
-            console.error(error);
-            throw new Error(error.errors);
+            if(error instanceof ValidationError) {
+                throw new ValidationError(error.message, error.errorObject);
+            } else {
+                throw new Error(error.message);
+            }
         }
     }
 

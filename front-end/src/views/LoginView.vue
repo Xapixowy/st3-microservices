@@ -52,8 +52,9 @@ const isFormValid = computed<boolean>(() => {
   return !!username.value && !!password.value;
 });
 
-const login = () => {
-  userStore.login(username.value, password.value);
+const login = async () => {
+  await userStore.login(username.value, password.value);
+  await router.push('/restaurants')
 }
 
 const register = () => {

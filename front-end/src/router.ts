@@ -1,4 +1,5 @@
 import {createWebHistory, createRouter, RouteRecordRaw, Router} from "vue-router";
+import AuthService from "@/services/AuthService.ts";
 
 const routes  = [
     { path: '/', name: 'Home', component: () =>import('@views/HomeView.vue') },
@@ -7,7 +8,6 @@ const routes  = [
     {
         path: '/hotels',
         name: 'HotelsList',
-        component: import('@views/HotelsView.vue'),
         children: [
             {
                 path: '',
@@ -28,9 +28,8 @@ const routes  = [
         ]
     },
     {
-        path: '/restuarants',
+        path: '/restaurants',
         name: 'Restaurants',
-        component: () => import('@views/RestaurantsView.vue'),
         children: [
             {
                 path: '',
@@ -53,7 +52,6 @@ const routes  = [
     {
         path: '/reservations',
         name: 'Reservations',
-        component: import('@views/ReservationsView.vue'),
         children: [
             {
                 path: '',
@@ -74,9 +72,12 @@ const router: Router = createRouter({
     routes
 });
 
-// router.beforeEach((to, from, next) => {
-//     document.title = to.meta.title || 'Hotels'
-//     next()
-// })
+router.beforeEach((to, from, next) => {
+    if ((to.path !== '/login' && to.path !== '/register') && !AuthService.isLoggedIn()) {
+        next('/login')
+    } else {
+        next()
+    }
+})
 
 export default router;

@@ -2,12 +2,10 @@
 
 class ApiClient {
     private static instance: ApiClient;
-    private baseUrl: string;
     private token: string;
 
 
     constructor() {
-        this.baseUrl = "http://localhost:81";
     }
 
     setToken(token: string) {
@@ -22,7 +20,7 @@ class ApiClient {
     }
 
     public async get(endpoint: string = "", params?: any): Promise<any> {
-       return await fetch(`${this.baseUrl}/${endpoint}`, {
+       return await fetch(`${endpoint}`, {
            method: 'GET',
            headers: {
                'Accept': 'application/json',
@@ -32,7 +30,7 @@ class ApiClient {
     }
 
     public async post(endpoint: string = "", body?: unknown,  params?: unknown): Promise<any> {
-        return await fetch(`${this.baseUrl}/${endpoint}`, {
+        return await fetch(`${endpoint}`, {
             method: 'POST',
             body: JSON.stringify(body),
             headers: {
@@ -43,7 +41,7 @@ class ApiClient {
     }
 
     public async put(endpoint: string = "", body?: any,  params?: any): Promise<any> {
-        return await fetch(`${this.baseUrl}/${endpoint}`, {
+        return await fetch(`${endpoint}`, {
             method: 'PUT',
             body: JSON.stringify(body),
             headers: {
@@ -53,8 +51,19 @@ class ApiClient {
         });
     }
 
+    public async patch(endpoint: string = "", body?: any,  params?: any): Promise<any> {
+        return await fetch(`${endpoint}`, {
+            method: 'PATCH',
+            body: JSON.stringify(body),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        });
+    }
+
     public async delete(endpoint: string = "", body?: any,  params?: any): Promise<any> {
-        return await fetch(`${this.baseUrl}/${endpoint}`, {
+        return await fetch(`${endpoint}`, {
             method: 'DELETE',
             body: JSON.stringify(body),
             headers: {
