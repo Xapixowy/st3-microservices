@@ -5,7 +5,7 @@ export interface Reservation {
     check_out_date: Date;
     is_paid: boolean;
     hotel_id?: string;
-    reservation_id?: string;
+    restaurant_id?: string;
     room_id?: string;
     table_id?: string;
 }

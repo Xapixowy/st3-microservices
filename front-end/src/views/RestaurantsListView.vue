@@ -19,6 +19,9 @@
           <td>{{ restaurant.description }}</td>
           <td class="buttons">
             <div class="buttons_container">
+              <v-btn @click="showRestaurantHandler(restaurant)" >
+                Show
+              </v-btn>
               <v-btn @click="editHandler(restaurant)" color="primary">Edit</v-btn>
               <v-dialog max-width="500px">
                 <template v-slot:activator="{ props: activatorProps }">
@@ -47,6 +50,7 @@
 import MainLayout from "@/shared/MainLayout.vue";
 
 import {useRestaurantStore} from "@/storage/RestaurantStorage.ts";
+import { IconEdit } from '@tabler/icons-vue';
 import router from "@/router.ts";
 import {onMounted, ref} from "vue";
 import {Restaurant} from "@/types/Restaurant.ts";
@@ -59,6 +63,10 @@ const restaurants = ref<Restaurant[]>([]);
 
 const createHandler = () => {
   router.push('/restaurants/create');
+}
+
+const showRestaurantHandler = (restaurant: Restaurant) => {
+  router.push(`/restaurants/${restaurant.id}/tables`);
 }
 
 const editHandler = (restaurant: Restaurant) => {

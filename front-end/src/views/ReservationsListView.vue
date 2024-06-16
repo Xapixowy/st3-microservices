@@ -112,7 +112,6 @@ onMounted(async () => {
   hotels.value = await hotelStore.getAll();
   restaurants.value = await restaurantStore.getAll();
   reservations.value = await reservationStore.getAll();
-  console.log(reservations.value);
 })
 </script>
 

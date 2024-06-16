@@ -1,5 +1,6 @@
 <template>
 <v-form>
+  <form-errors :errors="errors" />
   <v-select v-model="hotelId" :items="hotels" item-value="id" item-title="name" label="Hotel" :rules="[v => !!v || 'Hotel is required']" />
   <v-select v-if="!!hotelId" v-model="roomId" :items="rooms" item-value="id" item-title="name" label="Room" :rules="[v => !!v || 'Room is required']" />
   <v-date-input
@@ -9,9 +10,6 @@
       multiple="range"
       prepend-icon=""
   ></v-date-input>
-<div>
-  {{ errors}}
-</div>
   <div class="form__actions">
     <v-btn @click="cancel">Cancel</v-btn>
     <v-btn @click="createHotelReservation">Create</v-btn>
@@ -22,12 +20,18 @@
 <script setup lang="ts">
 import { VDateInput } from 'vuetify/labs/VDateInput'
 
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref, watch, nextTick} from "vue";
 import {Room} from "@/types/Room.ts";
 import {Hotel} from "@/types/Hotel.ts";
 import {userHotelStore} from "@/storage/HotelStorage.ts";
 import {useReservationStore} from "@/storage/ReservationStorage.ts";
 import router from "@/router.ts";
+import FormErrors from "@components/FormErrors.vue";
+import {Reservation} from "@/types/Reservation.ts";
+
+const props = defineProps<{
+  reservation?: Reservation
+}>();
 
 const hotelStore = userHotelStore();
 const reservationStore = useReservationStore();
@@ -70,7 +74,7 @@ const createHotelReservation = async () => {
 }
 
 const cancel = () => {
-  router.push('/restaurants');
+  router.push('/reservations');
 }
 
 const formatDate = (date: string) => {
@@ -84,9 +88,32 @@ const formatDate = (date: string) => {
   return `${formattedDateObj.replace(/\//g, '-')} 12:00`;
 }
 
+const generateRangeArray = (startDate: string, endDate: string) => {
+  const startDateObj = new Date(startDate);
+  const endDateObj = new Date(endDate);
+  const dateRange = [];
+  while (startDateObj <= endDateObj) {
+    dateRange.push(new Date(startDateObj));
+    startDateObj.setDate(startDateObj.getDate() + 1);
+
+  }
+  return dateRange;
+}
 
 onMounted(async () => {
   hotels.value = await hotelStore.getAll();
+  nextTick(() => {
+    setTimeout(() => {
+    if (props.reservation) {
+      hotelId.value = props.reservation.hotel_id;
+      roomId.value = props.reservation.room_id;
+      checkInDate.value = props.reservation.check_in_date;
+      checkOutDate.value = props.reservation.check_out_date;
+      dateRange.value = generateRangeArray(checkInDate.value, checkOutDate.value);
+    }
+    }, 100);
+  })
+
 })
 </script>
 

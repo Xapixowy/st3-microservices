@@ -52,11 +52,16 @@ export const useRestaurantStore = defineStore('restaurant', () => {
         }
     }
 
+    const getTables = async (restaurantId: string) => {
+        return await RestaurantService.getRestaurantTables(restaurantId);
+    }
+
     return {
         getAll,
         store,
         find,
         update,
-        deleteRestaurant
+        deleteRestaurant,
+        getTables
     }
 });

@@ -56,23 +56,47 @@ class RestaurantService {
     }
 
     public async getRestaurantTables(restaurantId: string): Promise<any> {
-         await ApiClient.get(`${this.endpoint}/${restaurantId}/tables`);
+         const response = await ApiClient.get(`${this.endpoint}/${restaurantId}/tables`);
+         const responseData = await response.json();
+         return responseData.data;
     }
 
     public async getRestaurantTable(restaurantId: string, tableId: string): Promise<any> {
-        return await ApiClient.get(`${this.endpoint}/${restaurantId}/tables/${tableId}`);
+        const response = await ApiClient.get(`${this.endpoint}/${restaurantId}/tables/${tableId}`);
+        const responseData = await response.json();
+        return responseData.data;
     }
 
     public async storeRestaurantTable(restaurantId: string, table: Table): Promise<any> {
-        return await ApiClient.post(`${this.endpoint}/${restaurantId}/tables`, table);
+        const response = await ApiClient.post(`${this.endpoint}/${restaurantId}/tables`, table);
+        if ( response.status === 422 ) {
+            const responseData = await response.json();
+            throw new ValidationError("" ,responseData.errors);
+        }
+        if (!response.ok) {
+            throw new Error("Restaurant table creation failed!");
+        }
+        return response;
     }
 
-    public async updateRestaurantTable(restaurantId: string, tableId: string, table: Table): Promise<any> {
-        return await ApiClient.patch(`${this.endpoint}/${restaurantId}/tables/${tableId}`, table);
+    public async updateRestaurantTable(restaurantId: string, tableId: string | undefined, table: Table): Promise<any> {
+        const response = await ApiClient.patch(`${this.endpoint}/${restaurantId}/tables/${tableId}`, table);
+        if ( response.status === 422 ) {
+            const responseData = await response.json();
+            throw new ValidationError("" ,responseData.errors);
+        }
+        if (!response.ok) {
+            throw new Error("Restaurant table update failed!");
+        }
+        return response;
     }
 
     public async deleteRestaurantTable(restaurantId: string, tableId: string): Promise<any> {
-        return await ApiClient.delete(`${this.endpoint}/${restaurantId}/tables/${tableId}`);
+        const response = await ApiClient.delete(`${this.endpoint}/${restaurantId}/tables/${tableId}`);
+        if (!response.ok) {
+            throw new Error("Restaurant table deletion failed!");
+        }
+        return response;
     }
 }
 

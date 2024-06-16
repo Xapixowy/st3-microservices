@@ -18,8 +18,10 @@
         <td>{{ hotel.description }}</td>
         <td class="buttons">
           <div class="buttons_container">
+            <v-btn @click="showHotelHandler(hotel)" >
+              Show
+            </v-btn>
             <v-btn @click="editHandler(hotel)" color="primary">Edit</v-btn>
-
             <v-dialog max-width="500px">
               <template v-slot:activator="{ props: activatorProps }">
                 <v-btn v-bind="activatorProps" color="error">Delete</v-btn>
@@ -61,6 +63,11 @@ const hotels = ref<Hotel[]>([]);
 const createHandler = () => {
   router.push('/hotels/create');
 }
+
+const showHotelHandler = (hotel: Hotel) => {
+  router.push(`/hotels/${hotel.id}/rooms`);
+}
+
 const editHandler = (hotel: Hotel) => {
   router.push(`/hotels/${hotel.id}/edit`);
 }

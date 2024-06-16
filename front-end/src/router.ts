@@ -24,6 +24,24 @@ const routes  = [
                 name: 'HotelEdit',
                 component: () => import('@views/HotelEditView.vue'),
                 props: true
+            },
+            {
+                path: ':hotelId/rooms',
+                name: 'HotelRooms',
+                component: () => import('@views/RoomsListView.vue'),
+                props: true
+            },
+            {
+                path: ':hotelId/rooms/create',
+                name: 'HotelRoomCreate',
+                component: () => import('@views/RoomCreateView.vue'),
+                props: true
+            },
+            {
+                path: ':hotelId/rooms/:roomId/edit',
+                name: 'HotelRoomEdit',
+                component: () => import('@views/RoomEditView.vue'),
+                props: true
             }
         ]
     },
@@ -46,6 +64,24 @@ const routes  = [
                 name: 'RestaurantEdit',
                 component: () => import('@views/RestaurantEditView.vue'),
                 props: true
+            },
+            {
+                path: ':restaurantId/tables',
+                name: 'RestaurantTables',
+                component: () => import('@views/TablesList.vue'),
+                props: true,
+            },
+            {
+                path: ':restaurantId/tables/create',
+                name: 'RestaurantTableCreate',
+                component: () => import('@views/TableCreateView.vue'),
+                props: true,
+            },
+            {
+                path: ':restaurantId/tables/:tableId/edit',
+                name: 'RestaurantTableEdit',
+                component: () => import('@views/TableEditView.vue'),
+                props: true,
             }
         ]
     },
@@ -63,8 +99,15 @@ const routes  = [
                 name: 'ReservationCreate',
                 component: () => import('@views/ReservationCreateView.vue')
             },
+            {
+                path: ':id/edit',
+                name: 'ReservationEdit',
+                component: () => import('@views/ReservationEditView.vue'),
+                props: true
+            }
+
         ]
-    }
+    },
 ]
 
 const router: Router = createRouter({

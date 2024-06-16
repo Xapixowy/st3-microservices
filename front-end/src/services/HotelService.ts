@@ -64,19 +64,40 @@ class HotelService {
     }
 
     public async getHotelRoom(hotelId: string, roomId: string): Promise<any> {
-        return await ApiClient.get(`${this.endpoint}/${hotelId}/rooms/${roomId}`);
+        const response = await ApiClient.get(`${this.endpoint}/${hotelId}/rooms/${roomId}`);
+        const responseData = await response.json();
+        return responseData.data;
     }
 
     public async storeHotelRoom(hotelId: string, room: Room): Promise<any> {
-        return await ApiClient.post(`${this.endpoint}/${hotelId}/rooms`, room);
+        const response = await ApiClient.post(`${this.endpoint}/${hotelId}/rooms`, room);
+        if ( response.status === 422 ) {
+            const responseData = await response.json();
+            throw new ValidationError("" ,responseData.errors);
+        }
+        if (!response.ok) {
+            throw new Error("Hotel room creation failed!");
+        }
     }
 
     public async updateHotelRoom(hotelId: string, roomId: string, room: Room): Promise<any> {
-        return await ApiClient.patch(`${this.endpoint}/${hotelId}/rooms/${roomId}`, room);
+        const response = await ApiClient.patch(`${this.endpoint}/${hotelId}/rooms/${roomId}`, room);
+        if ( response.status === 422 ) {
+            const responseData = await response.json();
+            throw new ValidationError("" ,responseData.errors);
+        }
+        if (!response.ok) {
+            throw new Error("Hotel room update failed!");
+        }
+        return response;
     }
 
     public async deleteHotelRoom(hotelId: string, roomId: string): Promise<any> {
-        return await ApiClient.delete(`${this.endpoint}/${hotelId}/rooms/${roomId}`);
+        const response = await ApiClient.delete(`${this.endpoint}/${hotelId}/rooms/${roomId}`);
+        if (!response.ok) {
+            throw new Error("Hotel room deletion failed!");
+        }
+        return response;
     }
 }
 
