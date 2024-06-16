@@ -22,6 +22,6 @@ class Room extends RoomTable
 
     public function hotel(): BelongsTo
     {
-        return $this->belongsTo(Hotel::class);
+        return $this->belongsTo(Business::class);
     }
 }
