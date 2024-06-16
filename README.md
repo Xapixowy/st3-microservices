@@ -42,7 +42,7 @@
 16. Copy **.env.example** to **.env**: `cp .env.example .env`
 17. Create docker containers: `./vendor/bin/sail up -d`
 18. Run migrations: `./vendor/bin/sail artisan migrate`
-19. Go to **frontend** directory
+19. Go to **front-end** directory
 20. Run command to install all node modules: `npm install`
 21. Run command to start the frontend: `npm run dev`
 22. Frontend will be available at http://localhost:5173
